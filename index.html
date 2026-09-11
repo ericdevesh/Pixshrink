@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixShrink — Free Online Image Compressor</title>
+  <meta name="description" content="Compress JPG, PNG, and WebP images directly in your browser. Reduce file size while keeping quality. Fast, private, and free.">
+  <meta name="theme-color" content="#0F1117">
+  <link rel="canonical" href="https://example.com/">
+  <script>
+    try {
+      var t = localStorage.getItem("pixshrink-theme");
+      document.documentElement.dataset.theme = t === "light" ? "light" : "dark";
+    } catch (e) {}
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="PixShrink — Free Online Image Compressor">
+  <meta property="og:description" content="Compress images locally in your browser. Your files never leave your device.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:image" content="https://example.com/og-image.png">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PixShrink — Free Online Image Compressor">
+  <meta name="twitter:description" content="Compress JPG, PNG, and WebP images directly in your browser. Fast, private, and free.">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="PixShrink home">
+        <svg class="brand-mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+          <rect x="4" y="4" width="24" height="24" rx="6" fill="var(--accent)"/>
+          <path d="M11 20 L16 11 L21 20 Z" fill="none" stroke="var(--surface)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" transform="rotate(180 16 15.5)"/>
+          <path d="M11.5 20.5 L20.5 20.5" stroke="var(--surface)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">PixShrink</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#compressor">Compressor</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
+
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode" aria-pressed="false">
+        <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.5M12 19v2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"></path></svg>
+        <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ HERO + UPLOAD ============ -->
+    <section id="compressor" class="hero" aria-labelledby="hero-heading">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <p class="privacy-badge">🔒 100% Private · Browser Processing</p>
+          <h1 id="hero-heading">Compress images.<br>Keep the quality.</h1>
+          <p class="hero-sub">Reduce image file sizes in seconds without uploading your files. Fast, private, and completely browser-based.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary btn-lg" id="heroCtaBtn">Compress an Image</button>
+          </div>
+          <ul class="trust-indicators" aria-label="Trust indicators">
+            <li>Free</li>
+            <li>No signup</li>
+            <li>Browser-based</li>
+            <li>Private</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual">
+          <div class="dropzone" id="dropzone" tabindex="0" role="button"
+               aria-label="Upload images. Click, or drag and drop JPG, PNG, or WebP files here.">
+            <svg class="dropzone-icon" viewBox="0 0 48 48" aria-hidden="true">
+              <rect x="6" y="6" width="36" height="36" rx="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M24 30V16M17 23l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="dropzone-title">Drop your images here</p>
+            <p class="dropzone-sub">or <span class="link-text">Browse Files</span></p>
+            <p class="dropzone-meta">JPG · PNG · WebP</p>
+            <p class="dropzone-meta dropzone-meta-quiet">Processed locally in your browser</p>
+            <input type="file" id="fileInput" class="visually-hidden"
+                   accept="image/jpeg,image/png,image/webp" multiple
+                   aria-hidden="true" tabindex="-1">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORKSPACE (hidden until files exist) ============ -->
+    <section id="workspace" class="workspace" hidden aria-labelledby="workspace-heading">
+      <div class="workspace-inner">
+        <div class="workspace-header">
+          <div>
+            <h2 id="workspace-heading" class="workspace-title">Your images</h2>
+            <p class="batch-summary" id="batchSummary" aria-live="polite"></p>
+          </div>
+          <div class="workspace-header-actions">
+            <button type="button" class="btn btn-secondary" id="addMoreBtn">Add more</button>
+            <button type="button" class="btn btn-secondary" id="downloadAllBtn" hidden>Download All</button>
+            <button type="button" class="btn btn-ghost" id="clearAllBtn">Clear All</button>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <!-- Settings panel -->
+          <aside class="settings-panel" aria-label="Compression settings">
+            <h3 class="panel-heading">Compression settings</h3>
+
+            <div class="field-group">
+              <span class="field-label" id="presetLabel">Preset</span>
+              <div class="preset-buttons" role="group" aria-labelledby="presetLabel">
+                <button type="button" class="preset-btn" data-preset="maximum">Maximum</button>
+                <button type="button" class="preset-btn is-active" data-preset="balanced">Balanced</button>
+                <button type="button" class="preset-btn" data-preset="web">Web</button>
+                <button type="button" class="preset-btn" data-preset="smallest">Smallest</button>
+                <button type="button" class="preset-btn" data-preset="custom">Custom</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="qualitySlider" class="field-label">Quality</label>
+                <output for="qualitySlider" id="qualityValue">80%</output>
+              </div>
+              <input type="range" id="qualitySlider" min="10" max="100" step="1" value="80">
+              <p class="field-hint" id="qualityHint"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="formatSelect" class="field-label">Output format</label>
+              <select id="formatSelect" class="select">
+                <option value="auto" selected>Auto</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+                <option value="png">PNG</option>
+              </select>
+              <p class="field-hint" id="formatHint"></p>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="resizeSlider" class="field-label">Max dimension</label>
+                <output for="resizeSlider" id="resizeValue">Original</output>
+              </div>
+              <input type="range" id="resizeSlider" min="320" max="4000" step="20" value="4000">
+              <p class="field-hint" id="resizeHint">Drag to cap the longest side. Aspect ratio is kept and images are never upscaled.</p>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="targetSizeSlider" class="field-label">Target size</label>
+                <output for="targetSizeSlider" id="targetSizeValue">500 KB</output>
+              </div>
+              <input type="range" id="targetSizeSlider" min="10" max="5000" step="10" value="500">
+              <button type="button" class="btn btn-secondary btn-full" id="targetSizeBtn">Optimize to Target</button>
+              <p class="field-hint">Exact size may vary depending on image content and format.</p>
+            </div>
+          </aside>
+
+          <!-- File list -->
+          <div class="file-list-wrap">
+            <ul class="file-list" id="fileList" aria-label="Uploaded images"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how-it-works" class="how-it-works" aria-labelledby="how-heading">
+      <div class="section-inner">
+        <h2 id="how-heading">How it works</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-index">01</span>
+            <h3>Upload</h3>
+            <p>Drag and drop your images into PixShrink.</p>
+          </li>
+          <li class="step">
+            <span class="step-index">02</span>
+            <h3>Optimize</h3>
+            <p>Choose a preset or customize quality, format, and dimensions.</p>
+          </li>
+          <li class="step">
+            <span class="step-index">03</span>
+            <h3>Download</h3>
+            <p>Download the optimized image instantly.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ PRIVACY ============ -->
+    <section id="privacy" class="privacy" aria-labelledby="privacy-heading">
+      <div class="section-inner">
+        <h2 id="privacy-heading">Your images stay yours.</h2>
+        <p class="privacy-lead">PixShrink processes your images directly in your browser. Your files are not uploaded to a server or stored in the cloud.</p>
+        <div class="privacy-cards">
+          <div class="privacy-card">
+            <h3>Local Processing</h3>
+            <p>Your images are processed directly on your device.</p>
+          </div>
+          <div class="privacy-card">
+            <h3>No Uploads</h3>
+            <p>Your image files don't need to leave your browser.</p>
+          </div>
+          <div class="privacy-card">
+            <h3>No Account</h3>
+            <p>Compress images without signing up.</p>
+          </div>
+        </div>
+
+        <div class="benefits">
+          <div class="benefit">
+            <h3>Smaller Files</h3>
+            <p>Reduce image file size for easier storage and sharing.</p>
+          </div>
+          <div class="benefit">
+            <h3>Faster Websites</h3>
+            <p>Smaller images can reduce page weight and improve loading performance.</p>
+          </div>
+          <div class="benefit">
+            <h3>Private Processing</h3>
+            <p>Images are optimized directly in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-name">PixShrink</span>
+        <p>Compress images. Keep the quality.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#compressor">Compressor</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#" data-placeholder-link>GitHub</a>
+      </nav>
+      <p class="footer-copy">© 2026 PixShrink</p>
+    </div>
+  </footer>
+
+  <!-- ============ TOASTS ============ -->
+  <div class="toast-region" id="toastRegion" role="status" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ============ TEMPLATE: file card ============ -->
+  <template id="fileCardTemplate">
+    <li class="file-card" data-file-id="">
+      <div class="file-card-row">
+        <div class="file-thumb">
+          <img alt="" />
+        </div>
+        <div class="file-info">
+          <p class="file-name"></p>
+          <p class="file-meta"><span class="file-meta-size"></span><span class="file-meta-dims"></span></p>
+          <div class="file-status">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status-label">Waiting</span>
+          </div>
+        </div>
+        <div class="file-result" hidden>
+          <p class="file-result-size"></p>
+          <p class="file-result-reduction"></p>
+        </div>
+        <div class="file-actions">
+          <button type="button" class="btn btn-secondary btn-sm btn-compare" hidden>Compare</button>
+          <button type="button" class="btn btn-primary btn-sm btn-download" hidden>Download</button>
+          <button type="button" class="btn btn-ghost btn-sm btn-retry" hidden>Try Again</button>
+          <button type="button" class="icon-btn btn-remove" aria-label="Remove image">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="file-error-msg" hidden></p>
+      <div class="file-detail" hidden>
+        <div class="compare-wrap">
+          <div class="compare" tabindex="0" role="slider" aria-label="Drag to compare original and optimized image"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <img class="compare-after" alt="Optimized image" />
+            <div class="compare-before-wrap">
+              <img class="compare-before" alt="Original image" />
+            </div>
+            <div class="compare-labels">
+              <span class="compare-label compare-label-before">Original</span>
+              <span class="compare-label compare-label-after">Optimized</span>
+            </div>
+            <div class="compare-handle">
+              <span class="compare-handle-grip">⇔</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-label">Original size</span>
+            <span class="stat-value stat-original-size"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Optimized size</span>
+            <span class="stat-value stat-optimized-size"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Saved</span>
+            <span class="stat-value stat-saved"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Reduction</span>
+            <span class="stat-value stat-reduction"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Dimensions</span>
+            <span class="stat-value stat-dimensions"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Output</span>
+            <span class="stat-value stat-output"></span>
+          </div>
+        </div>
+
+        <p class="quality-warning" hidden>High compression may introduce visible quality loss.</p>
+        <p class="size-warning" hidden>This version is larger than the original. Try a different output format, higher compression, or resizing.</p>
+        <p class="transparency-warning" hidden>JPEG does not support transparency. Transparent areas may be replaced with a background.</p>
+
+        <details class="dev-info">
+          <summary>Developer details</summary>
+          <dl class="dev-info-grid">
+            <div><dt>Filename</dt><dd class="dev-filename"></dd></div>
+            <div><dt>MIME type</dt><dd class="dev-mime"></dd></div>
+            <div><dt>Original dimensions</dt><dd class="dev-orig-dims"></dd></div>
+            <div><dt>Optimized dimensions</dt><dd class="dev-opt-dims"></dd></div>
+            <div><dt>Original size</dt><dd class="dev-orig-size"></dd></div>
+            <div><dt>Optimized size</dt><dd class="dev-opt-size"></dd></div>
+            <div><dt>Output format</dt><dd class="dev-format"></dd></div>
+          </dl>
+          <div class="dev-snippet-row">
+            <code class="dev-snippet"></code>
+            <button type="button" class="btn btn-ghost btn-sm btn-copy-snippet">Copy</button>
+          </div>
+        </details>
+      </div>
+    </li>
+  </template>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
